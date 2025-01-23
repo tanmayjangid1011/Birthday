@@ -35,7 +35,7 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             text-align: center;
             position: absolute;
@@ -58,6 +58,7 @@
             line-height: 1.6;
             margin: 10px 0;
             color: #002855;
+            overflow: hidden;
         }
 
         /* Individual Page Styles */
@@ -69,14 +70,13 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            margin-top: 20px;
             width: 100%;
         }
 
         .photos-grid img {
             width: 100%;
             height: auto; /* Maintains aspect ratio */
-            object-fit: cover; /* Ensures the image fills its container */
+            object-fit: cover;
             border-radius: 10px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
@@ -86,6 +86,68 @@
             color: #003a6b;
             margin-top: 10px;
             position: relative;
+        }
+
+        /* Floating Balloons Animation */
+        #balloon-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background-color: red;
+            border-radius: 50%;
+            animation: floatUp 6s infinite ease-in-out;
+        }
+
+        .balloon:nth-child(2) { background-color: yellow; }
+        .balloon:nth-child(3) { background-color: blue; }
+        .balloon:nth-child(4) { background-color: green; }
+        .balloon:nth-child(5) { background-color: purple; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        /* Transition Balloons */
+        .transition-balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background-color: red;
+            border-radius: 50%;
+            z-index: 3;
+            animation: popUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes popUp {
+            0% { transform: scale(1) translateY(0); opacity: 1; }
+            100% { transform: scale(1.2) translateY(-150px); opacity: 0; }
+        }
+
+        /* Confetti Explosion */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: yellow;
+            animation: explode 0.8s ease-out forwards;
+            z-index: 3;
+            opacity: 0;
+        }
+
+        @keyframes explode {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.5) translateY(200px); opacity: 0; }
         }
 
         /* Flip Animations */
@@ -106,7 +168,14 @@
     <div class="card-container" id="card-container">
         <!-- Page 1 -->
         <div class="card-page page-1 current">
-            <h2>Happy Birthday Mahima!</h2>
+            <h2>Happy Birthday Mahima!❤️</h2>
+            <div id="balloon-container">
+                <div class="balloon" style="left: 10%;"></div>
+                <div class="balloon" style="left: 30%;"></div>
+                <div class="balloon" style="left: 50%;"></div>
+                <div class="balloon" style="left: 70%;"></div>
+                <div class="balloon" style="left: 90%;"></div>
+            </div>
             <div class="nav-instructions">Swipe left to see the next page</div>
         </div>
 
@@ -124,7 +193,7 @@
 
         <!-- Page 3: Most Beautiful Lady of the Universe -->
         <div class="card-page page-3 next">
-            <h2>MOST BEAUTIFUL LADY OF THE UNIVERSE</h2>
+            <h2>MOST BEAUTIFUL LADY OF THE UNIVERSE👀😍</h2>
             <div class="photos-grid">
                 <img src="photo1.jpg" alt="Photo 1">
                 <img src="photo2.jpg" alt="Photo 2">
@@ -138,9 +207,9 @@
 
         <!-- Page 4: Special Emotional Message -->
         <div class="card-page page-4 next">
-            <h2>To My Best Friend Mahima</h2>
+            <h2>To Mahima</h2>
             <p>
-                You are not just my best friend, Mahima, you are my strength, my joy, and my greatest blessing.  
+                Mahima, you are my joy, and my greatest blessing.  
                 Your beauty is beyond words – it’s not just in your radiant smile, glowing expressions, or graceful elegance;  
                 it’s in the kindness and warmth you share with everyone around you.  
                 You have the rare ability to light up even the darkest days and make life so much more meaningful.
@@ -154,33 +223,55 @@
         const pages = document.querySelectorAll('.card-page');
         let currentPage = 0;
 
-        // Helper to update page classes for animations
         function updatePages() {
-            pages.forEach((page, index) => {
-                if (index === currentPage) {
-                    page.classList.add('current');
-                    page.classList.remove('next', 'prev');
-                } else if (index > currentPage) {
-                    page.classList.add('next');
-                    page.classList.remove('current', 'prev');
-                } else {
-                    page.classList.add('prev');
-                    page.classList.remove('current', 'next');
-                }
-            });
+            createTransitionEffect();
+            setTimeout(() => {
+                pages.forEach((page, index) => {
+                    if (index === currentPage) {
+                        page.classList.add('current');
+                        page.classList.remove('next', 'prev');
+                    } else if (index > currentPage) {
+                        page.classList.add('next');
+                        page.classList.remove('current', 'prev');
+                    } else {
+                        page.classList.add('prev');
+                        page.classList.remove('current', 'next');
+                    }
+                });
+            }, 800);
+        }
+
+        function createTransitionEffect() {
+            // Balloons
+            for (let i = 0; i < 5; i++) {
+                const balloon = document.createElement('div');
+                balloon.classList.add('transition-balloon');
+                balloon.style.left = `${Math.random() * 100}%`;
+                balloon.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                document.body.appendChild(balloon);
+
+                setTimeout(() => balloon.remove(), 800);
+            }
+
+            // Confetti
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animationDelay = `${Math.random() * 0.2}s`;
+                document.body.appendChild(confetti);
+
+                setTimeout(() => confetti.remove(), 800);
+            }
         }
 
         // Swipe handling
         let startX = 0;
-
-        cardContainer.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        });
-
+        cardContainer.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; });
         cardContainer.addEventListener('touchend', (e) => {
             const endX = e.changedTouches[0].clientX;
             const diffX = startX - endX;
-
             if (diffX > 50 && currentPage < pages.length - 1) {
                 currentPage++;
                 updatePages();
@@ -190,15 +281,9 @@
             }
         });
 
-        // Fallback for desktop navigation using arrow keys
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' && currentPage < pages.length - 1) {
-                currentPage++;
-                updatePages();
-            } else if (e.key === 'ArrowLeft' && currentPage > 0) {
-                currentPage--;
-                updatePages();
-            }
+            if (e.key === 'ArrowRight' && currentPage < pages.length - 1) { currentPage++; updatePages(); }
+            else if (e.key === 'ArrowLeft' && currentPage > 0) { currentPage--; updatePages(); }
         });
 
         updatePages();
